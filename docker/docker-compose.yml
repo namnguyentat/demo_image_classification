@@ -1,0 +1,19 @@
+version: '3.6'
+
+services:
+  python:
+    build: ..
+    volumes:
+      - ..:/app
+      - /dev/video0:/dev/video0
+    devices:
+      - /dev/video0:/dev/video0
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    container_name: demo-image-classification
+    env_file:
+      - .env
+    entrypoint: ./docker/entrypoint.sh
+    tty: true
+    stdin_open: true
