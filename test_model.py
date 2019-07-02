@@ -33,9 +33,10 @@ def main():
 
     while True:
         ret, frame = cam.read()
-        cv2.imshow("Detect Image", frame)
         if not ret:
+            print('Can not connect to camera')
             break
+        cv2.imshow("Detect Image", frame)
         k = cv2.waitKey(100)
 
         if k % 256 == 27:

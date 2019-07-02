@@ -15,5 +15,6 @@ services:
     env_file:
       - .env
     entrypoint: ./docker/entrypoint.sh
+    privileged: true
     tty: true
     stdin_open: true
