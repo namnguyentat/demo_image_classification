@@ -1,5 +1,5 @@
 # USAGE
-# python test_model.py --input downloads --model output/lenet.hdf5
+# python test_model.py
 
 # import the necessary packages
 from keras.preprocessing.image import img_to_array

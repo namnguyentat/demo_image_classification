@@ -1,5 +1,5 @@
 # USAGE
-# python train_model.py --dataset dataset --model output/lenet.hdf5
+# python train_model.py
 
 # import the necessary packages
 from sklearn.preprocessing import LabelBinarizer
