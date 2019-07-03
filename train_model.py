@@ -17,6 +17,12 @@ import argparse
 import cv2
 import os
 import shutil
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -45,7 +51,7 @@ def main():
         train()
         return
 
-    cam = cv2.VideoCapture(0)
+    cam = cv2.VideoCapture(-1)
     cv2.namedWindow("Capture Image")
 
     print('Press SPACE to capture image')

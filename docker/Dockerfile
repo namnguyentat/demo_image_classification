@@ -1,42 +1,32 @@
-FROM ubuntu:16.04
+# FROM tensorflow/tensorflow:latest-gpu-py3
+FROM tensorflow/tensorflow:latest-py3
 
-# Install requirements
-RUN apt-get update
-RUN apt-get install -y build-essential \
-  checkinstall \
-  libreadline-gplv2-dev \
-  libncursesw5-dev \
-  libssl-dev \
-  libsqlite3-dev \
-  tk-dev \
-  libgdbm-dev \
-  libc6-dev \
-  libbz2-dev \
-  zlib1g-dev \
-  openssl \
-  libffi-dev \
-  python3-dev \
-  python3-setuptools \
-  wget
+RUN apt-get update && \
+  apt-get upgrade -y && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  x11vnc \
+  xvfb \
+  xterm \
+  fluxbox && \
+  apt-get clean
 
-# Prepare to build
-RUN mkdir /tmp/Python37 \
-  && cd /tmp/Python37 \
-  && wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz \
-  && tar xvf Python-3.7.3.tar.xz \
-  && cd /tmp/Python37/Python-3.7.3 \
-  && ./configure \
-  && make altinstall
+# Create and configure the VNC user
+ARG VNCPASS
+ENV VNCPASS ${VNCPASS:-secret}
 
-RUN pip3.7 install --upgrade pip
-RUN pip3.7 install imutils \
+RUN useradd remote --create-home --shell /bin/bash --user-group --groups adm,sudo && \
+  echo "remote:$VNCPASS" | chpasswd
+
+# Install deep-learning libs
+RUN pip install imutils \
   matplotlib \
   opencv-python==3.4.5.20 \
   opencv-contrib-python==3.4.5.20 \
   scikit-learn==0.21.2 \
-  tensorflow==1.14 \
   keras==2.2.4
 
 ENV APP_HOME /app
 RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
+
+EXPOSE 5900
