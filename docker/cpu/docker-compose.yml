@@ -1,0 +1,21 @@
+version: '2.4'
+
+services:
+  main:
+    container_name: demoimageclassification_main
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - VNC_PASSWORD=secret
+      - DISPLAY=:0
+    ports:
+      - 5900:5900
+    volumes:
+      - /dev/video0:/dev/video0
+      - ../..:/app
+    entrypoint: ./docker/cpu/entrypoint.sh
+    command: ["python", "camera.py"]
+    privileged: true
+    tty: true
+    stdin_open: true

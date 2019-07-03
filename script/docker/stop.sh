@@ -2,4 +2,8 @@
 
 set -e
 
-docker-compose -f docker/docker-compose.yml -p demoimageclassification stop
+if [ "$GPU_ENABLE" == "1" ]; then
+  docker-compose -f docker/cpu/docker-compose.yml -p demoimageclassification stop
+else
+  docker-compose -f docker/cpu/docker-compose.yml -p demoimageclassification stop
+fi

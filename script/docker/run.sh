@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# if ! [[ $(pwd) =~ /venus/venus-api$ ]]; then
-#   echo "ERROR: Wrong directory. Please change directory to /venus/venus-api and try again"
-#   exit 1
-# fi
-
 set -e
 
-docker-compose -f docker/docker-compose.yml -p demoimageclassification run --rm --entrypoint=/bin/bash python -c "$@"
+if [ "$GPU_ENABLE" == "1" ]
+then
+  docker-compose -f docker/gpu/docker-compose.yml -p demoimageclassification run --rm --entrypoint=/bin/bash main -c "$@"
+else
+  docker-compose -f docker/cpu/docker-compose.yml -p demoimageclassification run --rm --entrypoint=/bin/bash main -c "$@"
+fi

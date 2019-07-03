@@ -46,10 +46,9 @@ def main():
             shutil.rmtree(args['dataset'])
         os.mkdir(args['dataset'])
         os.mkdir(args['dataset'] + "/" + str(class_counter))
-
-    if args['reset'] == '0':
-        train()
-        return
+    else:
+        if not os.path.exists(args['dataset']):
+            os.mkdir(args['dataset'])
 
     cam = cv2.VideoCapture(-1)
     cv2.namedWindow("Capture Image")
@@ -81,13 +80,15 @@ def main():
             cv2.imwrite(img_path, frame)
             img_counter += 1
             print(
-                "SPACE hit - capture {} images for class {}!".format(img_counter, class_counter + 1))
+                "SPACE hit - capture {} images for class {}!".format(img_counter, class_counter))
         elif k % 256 == 226:
             # SHIFT pressed
             print('SHIFT hit - next class')
             class_counter += 1
             img_counter = 0
-            os.mkdir(args['dataset'] + "/" + str(class_counter))
+            new_class_path = args['dataset'] + "/" + str(class_counter)
+            if not os.path.exists(new_class_path):
+                os.mkdir(new_class_path)
         elif k % 256 == 13:
             # ENTER pressed
             print('ENTER hit - start training')
@@ -132,6 +133,9 @@ def train():
     lb = LabelBinarizer().fit(trainY)
     trainY = lb.transform(trainY)
     testY = lb.transform(testY)
+    if classes_count == 2:
+        trainY = np.hstack((1 - trainY, trainY))
+        testY = np.hstack((1 - testY, testY))
 
     # initialize the model
     print("[INFO] compiling model...")
@@ -151,6 +155,7 @@ def train():
     print("[INFO] training network...")
     H = model.fit(trainX, trainY,  validation_data=(testX, testY),
                   batch_size=32, epochs=epochs, callbacks=callbacks, verbose=1)
+
 
 if __name__ == '__main__':
     main()
