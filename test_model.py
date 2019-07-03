@@ -11,12 +11,18 @@ import numpy as np
 import argparse
 import imutils
 import cv2
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", default='dataset',
                 help="path to input dataset")
-ap.add_argument("-m", "--model", default='output/minivggnet.hdf5',
+ap.add_argument("-m", "--model", default='output/lenet.hdf5',
                 help="path to input model")
 args = vars(ap.parse_args())
 

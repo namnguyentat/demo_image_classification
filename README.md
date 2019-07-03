@@ -2,12 +2,16 @@
 
 ## Setup
 
-- Run 'script/docker/setup.sh'
-- Run 'script/docker/run.sh bash'
+- script/docker/setup.sh
+
+## Start
+
+- script/docker/start.sh
+- docker exec -it demoimageclassification_main bash
 
 ## Training
 
-- Run `python3.7 train_model.py`
+- Run `python train_model.py`
   - options:
     - --dataset: path to input dataset, default: dataset
     - --model: training model (letnet or minivggnet), default: lenet
@@ -25,6 +29,6 @@
 
 ## Tesing
 
-- Run `python3.7 test_model.py`
+- Run `python test_model.py`
 - Point camara to object
 - Dected Image window will show object with highest match score

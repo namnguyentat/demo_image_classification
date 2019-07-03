@@ -1,20 +1,22 @@
-version: '3.6'
+version: '2.4'
 
 services:
-  python:
-    build: ..
-    volumes:
-      - ..:/app
-      - /dev/video0:/dev/video0
-    devices:
-      - /dev/video0:/dev/video0
+  main:
+    container_name: demoimageclassification_main
     build:
-      context: ..
-      dockerfile: ./docker/Dockerfile
-    container_name: demo-image-classification
-    env_file:
-      - .env
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - VNC_PASSWORD=secret
+      - DISPLAY=:0
+    ports:
+      - 5900:5900
+    volumes:
+      - /dev/video0:/dev/video0
+      - ..:/app
     entrypoint: ./docker/entrypoint.sh
+    command: ["python", "camera.py"]
     privileged: true
+    # runtime: nvidia # GPU enable
     tty: true
     stdin_open: true
