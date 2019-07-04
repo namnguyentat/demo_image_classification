@@ -28,9 +28,9 @@ session = InteractiveSession(config=config)
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", default='dataset',
                 help="path to input dataset")
-ap.add_argument("-o", "--output", default='output/lenet.hdf5',
+ap.add_argument("-o", "--output", default='output/minivggnet.hdf5',
                 help="path to output model")
-ap.add_argument("-m", "--model", default='lenet',
+ap.add_argument("-m", "--model", default='minivggnet',
                 help="train model")
 ap.add_argument("-r", "--reset", default='1',
                 help="reset dataset")
@@ -40,6 +40,7 @@ args = vars(ap.parse_args())
 def main():
     class_counter = 0
     img_counter = 0
+    is_capturing = False
 
     if args['reset'] == '1':
         if os.path.exists(args['dataset']):
@@ -64,7 +65,7 @@ def main():
             print('Can not capture image')
             break
         cv2.imshow("Capture Image", frame)
-        k = cv2.waitKey(1)
+        k = cv2.waitKey(50)
 
         if k % 256 == 27:
             # ESC pressed
@@ -72,18 +73,10 @@ def main():
             cam.release()
             cv2.destroyAllWindows()
             break
-        elif k % 256 == 32:
-            # SPACE pressed
-            img_path = "{}/{}/opencv_frame_{}.png".format(
-                str(args['dataset']), str(class_counter), str(img_counter))
-            print(img_path)
-            cv2.imwrite(img_path, frame)
-            img_counter += 1
-            print(
-                "SPACE hit - capture {} images for class {}!".format(img_counter, class_counter))
         elif k % 256 == 226:
             # SHIFT pressed
             print('SHIFT hit - next class')
+            is_capturing = False
             class_counter += 1
             img_counter = 0
             new_class_path = args['dataset'] + "/" + str(class_counter)
@@ -91,11 +84,22 @@ def main():
                 os.mkdir(new_class_path)
         elif k % 256 == 13:
             # ENTER pressed
+            is_capturing = False
             print('ENTER hit - start training')
             cam.release()
             cv2.destroyAllWindows()
             train()
             break
+        elif k % 256 == 32 or is_capturing:
+              # SPACE pressed
+            is_capturing = True
+            img_path = "{}/{}/opencv_frame_{}.png".format(
+                str(args['dataset']), str(class_counter), str(img_counter))
+            print(img_path)
+            cv2.imwrite(img_path, frame)
+            img_counter += 1
+            print(
+                "SPACE hit - capture {} images for class {}!".format(img_counter, class_counter))
 
 
 def train():
