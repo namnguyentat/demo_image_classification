@@ -73,7 +73,7 @@ def main():
             cam.release()
             cv2.destroyAllWindows()
             break
-        elif k % 256 == 226:
+        elif k % 256 == 226 or img_counter >= 1000:
             # SHIFT pressed
             print('SHIFT hit - next class')
             is_capturing = False
