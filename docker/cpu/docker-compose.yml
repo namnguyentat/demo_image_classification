@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   main:
-    container_name: demoimageclassification_main
+    container_name: demoimageclassification_cpu_main
     build:
       context: .
       dockerfile: Dockerfile

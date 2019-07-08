@@ -22,7 +22,7 @@ session = InteractiveSession(config=config)
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", default='dataset',
                 help="path to input dataset")
-ap.add_argument("-m", "--model", default='output/minivggnet.hdf5',
+ap.add_argument("-m", "--model", default='output/lenet.hdf5',
                 help="path to input model")
 args = vars(ap.parse_args())
 

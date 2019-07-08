@@ -28,9 +28,9 @@ session = InteractiveSession(config=config)
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", default='dataset',
                 help="path to input dataset")
-ap.add_argument("-o", "--output", default='output/minivggnet.hdf5',
+ap.add_argument("-o", "--output", default='output/lenet.hdf5',
                 help="path to output model")
-ap.add_argument("-m", "--model", default='minivggnet',
+ap.add_argument("-m", "--model", default='lenet',
                 help="train model")
 ap.add_argument("-r", "--reset", default='1',
                 help="reset dataset")
@@ -41,6 +41,7 @@ def main():
     class_counter = 0
     img_counter = 0
     is_capturing = False
+    max_img_counter = 300 if args['model'] == 'lenet' else 1000
 
     if args['reset'] == '1':
         if os.path.exists(args['dataset']):
@@ -73,7 +74,7 @@ def main():
             cam.release()
             cv2.destroyAllWindows()
             break
-        elif k % 256 == 226 or img_counter >= 1000:
+        elif k % 256 == 226 or img_counter >= max_img_counter:
             # SHIFT pressed
             print('SHIFT hit - next class')
             is_capturing = False
