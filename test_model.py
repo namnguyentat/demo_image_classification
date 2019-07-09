@@ -43,7 +43,7 @@ def main():
             print('Can not connect to camera')
             break
         cv2.imshow("Detect Image", frame)
-        k = cv2.waitKey(100)
+        k = cv2.waitKey(30)
 
         if k % 256 == 27:
             # ESC pressed
