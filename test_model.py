@@ -22,7 +22,7 @@ session = InteractiveSession(config=config)
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", default='dataset',
                 help="path to input dataset")
-ap.add_argument("-m", "--model", default='output/lenet.hdf5',
+ap.add_argument("-m", "--model", default='output/minivggnet.h5',
                 help="path to input model")
 args = vars(ap.parse_args())
 
@@ -52,12 +52,17 @@ def main():
         else:
             # pre-process the frame then classify it
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            image = preprocess(image, 224, 224)
+            image = preprocess(image, 100, 100)
             image = np.expand_dims(img_to_array(image), axis=0) / 255.0
-            pred = model.predict(image).argmax(axis=1)[0]
-            detected_class = cv2.imread(args['dataset'] + '/' + str(pred) +
-                                         '/' + 'opencv_frame_0.png')
-            cv2.imshow('Detected class', detected_class)
+            result = model.predict(image)
+            pred = result.argmax(axis=1)[0]
+            score = result[0][pred]
+            if score >= 0.6:
+                detected_class = cv2.imread(args['dataset'] + '/' + str(pred) +
+                                            '/' + 'opencv_frame_0.png')
+                cv2.putText(detected_class, str(score), (50, 50),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3)
+                cv2.imshow('Detected class', detected_class)
 
     cam.release()
     cv2.destroyAllWindows()

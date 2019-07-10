@@ -28,11 +28,11 @@ session = InteractiveSession(config=config)
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", default='dataset',
                 help="path to input dataset")
-ap.add_argument("-o", "--output", default='output/lenet.hdf5',
+ap.add_argument("-o", "--output", default='output/minivggnet.h5',
                 help="path to output model")
-ap.add_argument("-m", "--model", default='lenet',
+ap.add_argument("-m", "--model", default='minivggnet',
                 help="train model")
-ap.add_argument("-r", "--reset", default='1',
+ap.add_argument("-r", "--reset", required=True,
                 help="reset dataset")
 args = vars(ap.parse_args())
 
@@ -115,7 +115,7 @@ def train():
         # load the image, pre-process it, and store it in the data list
         image = cv2.imread(imagePath)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = preprocess(image, 224, 224)
+        image = preprocess(image, 100, 100)
         image = img_to_array(image)
         data.append(image)
 
@@ -144,7 +144,7 @@ def train():
 
     # initialize the model
     print("[INFO] compiling model...")
-    model = CNN.build(width=224, height=224, depth=3, classes=classes_count)
+    model = CNN.build(width=100, height=100, depth=3, classes=classes_count)
     epochs = 10 if args['model'] == 'minivggnet' else 20
     opt = SGD(lr=0.01, decay=0.01 / epochs)
     model.compile(loss="categorical_crossentropy", optimizer=opt,
@@ -159,7 +159,7 @@ def train():
     # train the network
     print("[INFO] training network...")
     H = model.fit(trainX, trainY,  validation_data=(testX, testY),
-                  batch_size=32, epochs=epochs, callbacks=callbacks, verbose=1)
+                  batch_size=8, epochs=epochs, callbacks=callbacks, verbose=1)
 
 
 if __name__ == '__main__':
