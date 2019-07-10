@@ -2,6 +2,7 @@
 # python train_model.py
 
 # import the necessary packages
+from keras.preprocessing.image import ImageDataGenerator
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
@@ -145,7 +146,7 @@ def train():
     # initialize the model
     print("[INFO] compiling model...")
     model = CNN.build(width=100, height=100, depth=3, classes=classes_count)
-    epochs = 10 if args['model'] == 'minivggnet' else 20
+    epochs = 50 if args['model'] == 'minivggnet' else 100
     opt = SGD(lr=0.01, decay=0.01 / epochs)
     model.compile(loss="categorical_crossentropy", optimizer=opt,
                   metrics=["accuracy"])
@@ -156,10 +157,20 @@ def train():
                                  save_best_only=True, verbose=1)
     callbacks = [checkpoint]
 
+    # construct the image generator for data augmentation
+    aug = ImageDataGenerator(rotation_range=30, width_shift_range=0.1,
+                             height_shift_range=0.1, shear_range=0.2, zoom_range=0.2,
+                             horizontal_flip=True, fill_mode="nearest")
+
     # train the network
     print("[INFO] training network...")
-    H = model.fit(trainX, trainY,  validation_data=(testX, testY),
-                  batch_size=8, epochs=epochs, callbacks=callbacks, verbose=1)
+    # H = model.fit(trainX, trainY,  validation_data=(testX, testY),
+    #           batch_size=32, epochs=epochs, callbacks=callbacks, verbose=1)
+
+    H = model.fit_generator(aug.flow(trainX, trainY, batch_size=32),
+                            validation_data=(testX, testY), steps_per_epoch=len(
+                                trainX) // 32,
+                            epochs=epochs, callbacks=callbacks, verbose=1)
 
 
 if __name__ == '__main__':
