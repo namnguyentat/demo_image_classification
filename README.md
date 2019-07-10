@@ -36,6 +36,6 @@
   - options:
     - --dataset: path to input dataset, default: dataset
     - --model: training model (letnet or minivggnet), default: minivggnet
-- Point camara to object
+- Point camera to object
 - Dected Image window will show object with highest match score
 - Press Esc to quit (in camera window)
