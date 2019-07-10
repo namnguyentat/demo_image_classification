@@ -2,6 +2,7 @@
 
 ## Setup
 
+- If use GPU, `export GPU_ENABLE=1`
 - script/docker/setup.sh
 - Install VNC viewer
 
